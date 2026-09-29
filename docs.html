@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation & Portal | Nexflow ($NF)</title>
+  <style>
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-panel: #111111;
+      --border-dark: #222222;
+      --text-main: #ffffff;
+      --text-muted: #888888;
+      --accent: #6366f1;
+      --success: #10b981;
+    }
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-weight: 800; font-size: 20px; display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; }
+    .search-bar {
+      background: #1a1a1a;
+      border: 1px solid var(--border-dark);
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: var(--text-muted);
+      width: 300px;
+      outline: none;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr 240px;
+      flex: 1;
+    }
+    .sidebar {
+      border-right: 1px solid var(--border-dark);
+      padding: 24px;
+      background: var(--bg-panel);
+      position: sticky;
+      top: 65px;
+      height: calc(100vh - 65px);
+      overflow-y: auto;
+    }
+    .sidebar-group { margin-bottom: 28px; }
+    .sidebar-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 12px; font-weight: 700; }
+    .sidebar-link { display: block; padding: 6px 0; color: #aaa; text-decoration: none; font-size: 13.5px; transition: color 0.2s; cursor: pointer; }
+    .sidebar-link:hover, .sidebar-link.active { color: white; font-weight: 600; }
+    
+    .main-content { padding: 48px; max-width: 820px; }
+    .doc-section { display: none; }
+    .doc-section.active { display: block; }
+    
+    h1 { font-size: 36px; margin-bottom: 12px; font-weight: 800; }
+    h2 { font-size: 24px; margin-top: 36px; margin-bottom: 16px; font-weight: 700; color: #f3f4f6; }
+    p { color: var(--text-muted); line-height: 1.7; font-size: 15px; margin-bottom: 16px; }
+    
+    .card { background: var(--bg-panel); padding: 24px; border-radius: 12px; margin-top: 20px; border: 1px solid var(--border-dark); }
+    .status-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2); }
+    .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); }
+    
+    pre { background: #121212; color: #34d399; padding: 16px 20px; border-radius: 8px; font-family: monospace; font-size: 13.5px; border: 1px solid var(--border-dark); overflow-x: auto; margin: 20px 0; }
+    
+    .changelog-item { border-left: 2px solid var(--accent); padding-left: 20px; margin-bottom: 32px; position: relative; }
+    .changelog-date { font-size: 12px; color: var(--accent); font-weight: 600; margin-bottom: 6px; text-transform: uppercase; }
+    
+    .on-page-nav { padding: 24px; font-size: 13px; color: var(--text-muted); position: sticky; top: 65px; height: fit-content; }
+    .on-page-nav h4 { color: white; margin-bottom: 16px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .on-page-nav ul { list-style: none; padding: 0; }
+    .on-page-nav li { margin-bottom: 10px; }
+    .on-page-nav a { color: #888; text-decoration: none; }
+    .on-page-nav a:hover { color: white; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      <img src="nexflow_logo_transparent.png" alt="Nexflow" width="28" height="28" style="border-radius: 6px;">
+      Nexflow <span style="color:var(--text-muted); font-weight: 400;">Portal & Docs</span>
+    </a>
+    <input type="text" class="search-bar" placeholder="Search documentation, API endpoints, changelog...">
+    <a href="index.html" style="background: var(--accent); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600;">Back to Home</a>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-title">Overview</div>
+        <a class="sidebar-link active" onclick="switchTab('welcome', this)">Welcome to Nexflow</a>
+        <a class="sidebar-link" onclick="switchTab('changelog', this)">Changelog</a>
+        <a class="sidebar-link" onclick="switchTab('status', this)">System Status</a>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-title">Developers</div>
+        <a class="sidebar-link" onclick="switchTab('api-ref', this)">API Reference</a>
+        <a class="sidebar-link" onclick="switchTab('integrations', this)">Integrations & SDKs</a>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-title">Tokenomics ($NF)</div>
+        <a class="sidebar-link" onclick="switchTab('tokenomics', this)">Utility & Staking</a>
+      </div>
+    </nav>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="main-content">
+      
+      <!-- 1. WELCOME -->
+      <section id="welcome" class="doc-section active">
+        <h1>Welcome to Nexflow</h1>
+        <p>Nexflow is a decentralized AI inference aggregator designed to route developer prompts across frontier models with sub-second latency, powered by the $NF token economy.</p>
+        
+        <h2>The Core Philosophy</h2>
+        <p>We believe builders shouldn't be locked into a single AI provider. With one unified API endpoint, your applications instantly gain multi-model redundancy across OpenAI, Anthropic, Gemini, Grok, and Llama.</p>
+        
+        <div class="card">
+          <h3>Getting Started in 30 Seconds</h3>
+          <p>Generate your API key from the dashboard, choose your model routing preference, and start shipping immediately.</p>
+        </div>
+      </section>
+
+      <!-- 2. CHANGELOG -->
+      <section id="changelog" class="doc-section">
+        <h1>Changelog</h1>
+        <p>Stay updated with the latest improvements, protocol upgrades, and new model integrations.</p>
+        
+        <div class="changelog-item" style="margin-top: 32px;">
+          <div class="changelog-date">September 27, 2026 • v2.5.0</div>
+          <h2>Smart Failover & Staking Live</h2>
+          <p>We're thrilled to introduce <strong>Smart Failover</strong>. Nexflow now intelligently monitors provider latency in real-time. If your primary provider (e.g., GPT-4o) hits a bottleneck, we instantly switch your request to the next best model (e.g., Claude 3.5 Sonnet) without you writing a single line of extra code.</p>
+          <p>Staking is officially live for $NF. Node operators can now lock their tokens to participate in decentralized inference verification.</p>
+        </div>
+
+        <div class="changelog-item">
+          <div class="changelog-date">September 15, 2026 • v2.4.1</div>
+          <h2>Grok-2 & Llama 3.1 Support</h2>
+          <p>Expanded our model library. You can now access Grok-2 and Llama 3.1 405B via the same standard endpoint. We've optimized throughput lanes for these models to ensure 18ms latency or less.</p>
+        </div>
+
+        <div class="changelog-item">
+          <div class="changelog-date">August 30, 2026 • v2.0.0</div>
+          <h2>Mainnet Launch</h2>
+          <p>Nexflow Mainnet is live on Arc. Settlement for all inference requests is now gasless and sub-second. $NF utility enabled.</p>
+        </div>
+      </section>
+
+      <!-- 3. SYSTEM STATUS -->
+      <section id="status" class="doc-section">
+        <h1>System Status</h1>
+        <p>Nexflow monitors every endpoint globally. We aim for 99.99% uptime for your production AI workloads.</p>
+        
+        <div style="margin: 24px 0;">
+          <div class="status-badge" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3);">
+            <span class="status-dot"></span> All systems operational
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-weight: 500;">API Gateway (US-East)</span>
+            <span style="color: var(--success);">Operational • 12ms latency</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-weight: 500;">API Gateway (EU-West)</span>
+            <span style="color: var(--success);">Operational • 24ms latency</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <span style="font-weight: 500;">Model Routing Engine</span>
+            <span style="color: var(--success);">Operational</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 500;">Settlement (Arc)</span>
+            <span style="color: var(--success);">Operational • Block #420,133</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. API REFERENCE -->
+      <section id="api-ref" class="doc-section">
+        <h1>API Reference</h1>
+        <p>Nexflow uses a RESTful API standard that is fully compatible with the OpenAI SDK. If you can build with OpenAI, you can build with Nexflow.</p>
+        
+        <h2>Authentication</h2>
+        <p>All requests must include your API key in the <code>Authorization</code> header.</p>
+        <pre>Authorization: Bearer nx_live_YOUR_KEY_HERE</pre>
+
+        <h2>Chat Completions</h2>
+        <p>To send a message, make a POST request to our chat endpoint:</p>
+        <pre>POST https://api.nexflow.ai/v1/chat/completions</pre>
+
+        <p>Nexflow will automatically route your request based on the <code>model</code> parameter provided. Use <code>nexflow-auto</code> to let us handle the best model selection for your specific task.</p>
+      </section>
+
+      <!-- 5. INTEGRATIONS -->
+      <section id="integrations" class="doc-section">
+        <h1>Integrations & SDKs</h1>
+        <p>Integrate Nexflow in minutes. We provide officially supported SDKs and community-driven wrappers to make your development journey seamless.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 24px;">
+          <div class="card" style="margin-top: 0;">
+            <h3>Nexflow Python SDK</h3>
+            <p>Our official Python library simplifies complex routing and retries.</p>
+            <code style="display: block; padding: 10px; background: #000; border-radius: 4px; margin: 10px 0;">pip install nexflow-ai</code>
+            <a href="#" style="color: var(--accent); text-decoration: none; font-size: 13px;">View on GitHub →</a>
+          </div>
+          <div class="card" style="margin-top: 0;">
+            <h3>LangChain Integration</h3>
+            <p>Use <code>NexflowChat</code> as your primary LLM interface within LangChain.</p>
+            <code style="display: block; padding: 10px; background: #000; border-radius: 4px; margin: 10px 0;">from langchain_nexflow import NexflowChat</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. TOKENOMICS -->
+      <section id="tokenomics" class="doc-section">
+        <h1>$NF Tokenomics & Utility</h1>
+        <p>The <strong>$NF</strong> token powers governance, decentralized inference routing, and node staking on Arc.</p>
+        
+        <div class="card">
+          <h3>Token Details</h3>
+          <p><strong>Ticker:</strong> $NF<br><strong>Network:</strong> Arc<br><strong>Mechanism:</strong> 10% Burn on API inference spend + Staking rewards.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- On Page Nav -->
+    <aside class="on-page-nav">
+      <h4>Quick Navigation</h4>
+      <ul>
+        <li><a onclick="switchTab('welcome', null)">Welcome</a></li>
+        <li><a onclick="switchTab('changelog', null)">Changelog</a></li>
+        <li><a onclick="switchTab('status', null)">System Status</a></li>
+        <li><a onclick="switchTab('api-ref', null)">API Reference</a></li>
+        <li><a onclick="switchTab('integrations', null)">Integrations</a></li>
+      </ul>
+    </aside>
+  </div>
+
+  <script>
+    function switchTab(targetId, element) {
+      document.querySelectorAll('.doc-section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(targetId).classList.add('active');
+      
+      if (element) {
+        document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+        element.classList.add('active');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
